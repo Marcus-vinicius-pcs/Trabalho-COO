@@ -10,14 +10,69 @@ import java.awt.Color;
 /*                                                                     */
 /***********************************************************************/
 
-public class Main {
+class Ponto {
+
+	//criei nova classe (PONTO)
 	
-	/* Constantes relacionadas aos estados que os elementos   */
-	/* do jogo (player, projeteis ou inimigos) podem assumir. */
-	
+
 	public static final int INACTIVE = 0;
 	public static final int ACTIVE = 1;
 	public static final int EXPLODING = 2;
+
+	private int state;	// estado
+	private double X;	// coordenada x
+	private double Y;	// coordenada y
+	private double VX;	// velocidade no eixo x
+	private double VY;	// velocidade no eixo y
+
+	public Ponto(double x, double y, double vx, double vy){
+
+		this.state = ACTIVE;
+		this.X = x;
+		this.y = y;
+		this.VX = vx;
+		this.VY = vy;
+	}
+
+	public int getState(){
+		return state;
+	}
+
+	public double getX(){
+		return X;
+	}
+
+	public void setX(double X){
+		this.X = X;
+	}
+
+	public double getY(){
+		return Y;
+	}
+
+	public void setY(double y){
+		this.Y = y;
+	}
+
+	public double getVX(){
+		return VX;
+	}
+
+	public void setVX(double vx){
+		this.VX = vx;
+	}
+
+	public double getVY(){
+		return VY;
+	}
+
+	public void setxVY(double vy){
+		this.VY = vy;
+	}
+}
+
+
+public class Main {
 	
 	/* Espera, sem fazer nada, até que o instante de tempo atual seja */
 	/* maior ou igual ao instante especificado no parâmetro "time.    */
