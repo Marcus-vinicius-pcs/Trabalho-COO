@@ -71,7 +71,7 @@ class Player {
 
 	public Player() {
 		this.ponto = new Ponto(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90, 0.25, 0.25);
-
+		this.state = 1;
 		this.radius = 12.0;
 		this.explosionStart = 0;
 		this.explosionEnd = 0;
