@@ -14,65 +14,152 @@ class Ponto {
 
 	//criei nova classe (PONTO)
 	
-
-	public static final int INACTIVE = 0;
-	public static final int ACTIVE = 1;
-	public static final int EXPLODING = 2;
-
-	private int state;	// estado
 	private double X;	// coordenada x
 	private double Y;	// coordenada y
-	private double VX;	// velocidade no eixo x
-	private double VY;	// velocidade no eixo y
+	private double velocidadeX;
+	private double velocidadeY;
 
-	public Ponto(double x, double y, double vx, double vy){
-
-		this.state = ACTIVE;
+	public Ponto(double x, double y, double vX, double vY){
 		this.X = x;
-		this.y = y;
-		this.VX = vx;
-		this.VY = vy;
-	}
-
-	public int getState(){
-		return state;
+		this.Y = y;
+		this.velocidadeX = vX;
+		this.velocidadeY = vY;
 	}
 
 	public double getX(){
 		return X;
 	}
 
-	public void setX(double X){
-		this.X = X;
-	}
-
 	public double getY(){
 		return Y;
 	}
 
-	public void setY(double y){
-		this.Y = y;
+	public void moverParaCima(double y){
+		this.Y += y;
+	}
+	public void moverParaBaixo(double y){
+		this.Y += y;
+	}
+	public void moverParaEsquerda(double x){
+		this.X+= x;
+	}
+	public void moverParaDireita(double x){
+		this.X+= x;
 	}
 
-	public double getVX(){
-		return VX;
+}
+
+
+class Player {
+
+	private int state; 
+	private double radius;
+	private double explosionStart;
+	private double explosionEnd;
+	private long player_nextShot;
+
+	private Ponto ponto;
+
+	public Player() {
+		this.ponto = new Ponto(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90, 0.25, 0.25);
+
+		this.radius = 12.0;
+		this.explosionStart = 0;
+		this.explosionEnd = 0;
+		this.player_nextShot = System.currentTimeMillis();
 	}
 
-	public void setVX(double vx){
-		this.VX = vx;
+	public void explodir(){
+		this.state = 2;
+		this.explosionStart = System.currentTimeMillis();
+		this.explosionEnd = System.currentTimeMillis() + 2000;
 	}
 
-	public double getVY(){
-		return VY;
+	public void verificarFimExplosao(){
+		if(this.state == 2){
+	
+			if(System.currentTimeMillis() > this.explosionEnd){
+	
+				this.state = 1;
+			}
+		}
 	}
 
-	public void setxVY(double vy){
-		this.VY = vy;
+	
+}
+
+class Enemy{
+	private Ponto ponto;						// coordenadas
+
+	private int state;					// estados
+	private double angle;				// ângulos (indicam direção do movimento)
+	private double RV;					// velocidades de rotação
+	private double explosion_start;		// instantes dos inícios das explosões
+	private double explosion_end;		// instantes dos finais da explosões
+	private double  radius;				// raio (tamanho do inimigo 1)
+	private long nextEnemy;					// instante em que um novo inimigo 1 deve aparecer
+
+	public Enemy() {
+		this.state = 0;
+	}
+}
+
+class Enemy1{
+	private Enemy e;
+	private long enemy_nextShoot;				// instantes do próximo tiro
+}
+
+
+class Enemy2{
+	private Enemy e;
+	double enemy_spawnX = GameLib.WIDTH * 0.20;
+	int enemy_count = 0;							// contagem de inimigos tipo 2 (usada na "formação de voo")
+
+}
+
+class Projectiles{
+	private int states;					// estados
+	private Ponto ponto;
+
+	private double projectile_radius;
+
+	public Projectiles() {
+		this.states = 0;
+	}
+}
+
+class Stars {
+	private Ponto p;
+	private Double count;
+
+	public Stars(int tipo) throws Exception {
+		this.count = 0.0;
+
+		if (tipo == 1) // estrelas de primeiro plano
+		{
+			this.p = new Ponto(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, 0.070, 0);
+		}
+		else if (tipo == 2) // estrelas de segundo plano
+		{
+			this.p = new Ponto(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, 0.045, 0);
+		}
+
+		else {
+			throw new Exception("Tipo de estrela inválido");
+		}
 	}
 }
 
 
+
 public class Main {
+	
+	/* Constantes relacionadas aos estados que os elementos   */
+	/* do jogo (player, projeteis ou inimigos) podem assumir. */
+	
+	public static final int INACTIVE = 0;
+	public static final int ACTIVE = 1;
+	public static final int EXPLODING = 2;
 	
 	/* Espera, sem fazer nada, até que o instante de tempo atual seja */
 	/* maior ou igual ao instante especificado no parâmetro "time.    */
