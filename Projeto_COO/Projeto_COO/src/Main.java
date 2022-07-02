@@ -43,11 +43,11 @@ class Ponto {
 	}
 
 	public void moverParaCima(double y, long delta){
-		this.Y += y*delta*this.velocidadeY;
+		this.Y -= y*delta*this.velocidadeY;
 	}
 
 	public void moverParaBaixo(double y, long delta){
-		this.Y -= y*delta*this.velocidadeY;
+		this.Y += y*delta*this.velocidadeY;
 	}
 	public void moverParaEsquerda(double x, long delta){
 		this.X -= x*delta*this.velocidadeX;
@@ -71,7 +71,7 @@ class Player {
 
 	public Player() {
 		this.ponto = new Ponto(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90, 0.25, 0.25);
-
+		this.state = 1;
 		this.radius = 12.0;
 		this.explosionStart = 0;
 		this.explosionEnd = 0;
@@ -130,9 +130,9 @@ class Player {
 	}
 
 	public void explodir(){
-		this.state = 2;
-		this.explosionStart = System.currentTimeMillis();
-		this.explosionEnd = System.currentTimeMillis() + 2000;
+		setState(2);
+		setExplosionStart(System.currentTimeMillis());
+		setExplosionEnd(System.currentTimeMillis() + 2000);
 	}
 
 	public void verificarCoordenadas(){
@@ -305,16 +305,6 @@ public class Main {
 		long currentTime = System.currentTimeMillis();
 
 		/* variáveis do player */
-		
-		int player_state = ACTIVE;						// estado
-		double player_X = GameLib.WIDTH / 2;					// coordenada x
-		double player_Y = GameLib.HEIGHT * 0.90;				// coordenada y
-		double player_VX = 0.25;						// velocidade no eixo x
-		double player_VY = 0.25;						// velocidade no eixo y
-		double player_radius = 12.0;						// raio (tamanho aproximado do player)
-		double player_explosion_start = 0;					// instante do início da explosão
-		double player_explosion_end = 0;					// instante do final da explosão
-		long player_nextShot = currentTime;					// instante a partir do qual pode haver um próximo tiro
 
 		Player p1 = new Player();
 
@@ -587,7 +577,7 @@ public class Main {
 						enemy1_Y[i] += enemy1_V[i] * Math.sin(enemy1_angle[i]) * delta * (-1.0);
 						enemy1_angle[i] += enemy1_RV[i] * delta;
 						
-						if(currentTime > enemy1_nextShoot[i] && enemy1_Y[i] < player_Y){
+						if(currentTime > enemy1_nextShoot[i] && enemy1_Y[i] < p1.getY()){
 																							
 							int free = findFreeIndex(e_projectile_states);
 							
@@ -734,11 +724,11 @@ public class Main {
 			
 			/* Verificando se a explosão do player já acabou.         */
 			/* Ao final da explosão, o player volta a ser controlável */
-			if(player_state == EXPLODING){
+			if(p1.getState() == EXPLODING){
 				
-				if(currentTime > player_explosion_end){
+				if(currentTime > p1.getExplosionEnd()){
 					
-					player_state = ACTIVE;
+					p1.setState(ACTIVE);
 				}
 			}
 			
@@ -762,7 +752,7 @@ public class Main {
 						if(free < projectile_states.length){
 							
 							projectile_X[free] = p1.getX();
-							projectile_Y[free] = p1.getX() - 2 * p1.getRadius();
+							projectile_Y[free] = p1.getY() - 2 * p1.getRadius();
 							projectile_VX[free] = 0.0;
 							projectile_VY[free] = -1.0;
 							projectile_states[free] = ACTIVE;
