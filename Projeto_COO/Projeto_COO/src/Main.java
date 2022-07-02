@@ -34,17 +34,26 @@ class Ponto {
 		return Y;
 	}
 
-	public void moverParaCima(double y){
-		this.Y += y;
+	public void setX(double x){
+		this.X = x;
 	}
-	public void moverParaBaixo(double y){
-		this.Y += y;
+
+	public void setY(double y){
+		this.Y = y;
 	}
-	public void moverParaEsquerda(double x){
-		this.X+= x;
+
+	public void moverParaCima(double y, long delta){
+		this.Y += y*delta*this.velocidadeY;
 	}
-	public void moverParaDireita(double x){
-		this.X+= x;
+
+	public void moverParaBaixo(double y, long delta){
+		this.Y -= y*delta*this.velocidadeY;
+	}
+	public void moverParaEsquerda(double x, long delta){
+		this.X -= x*delta*this.velocidadeX;
+	}
+	public void moverParaDireita(double x, long delta){
+		this.X += x*delta*this.velocidadeX;
 	}
 
 }
@@ -56,7 +65,7 @@ class Player {
 	private double radius;
 	private double explosionStart;
 	private double explosionEnd;
-	private long player_nextShot;
+	private long nextShot;
 
 	private Ponto ponto;
 
@@ -66,13 +75,48 @@ class Player {
 		this.radius = 12.0;
 		this.explosionStart = 0;
 		this.explosionEnd = 0;
-		this.player_nextShot = System.currentTimeMillis();
+		this.nextShot = System.currentTimeMillis();
 	}
 
-	public void explodir(){
-		this.state = 2;
-		this.explosionStart = System.currentTimeMillis();
-		this.explosionEnd = System.currentTimeMillis() + 2000;
+	public double getRadius(){
+		return this.radius;
+	}
+	
+	public double getExplosionStart(){
+		return this.explosionStart;
+	}
+
+	public double getExplosionEnd(){
+		return this.explosionEnd;
+	}
+
+	public double getNextShot(){
+		return this.nextShot;
+	}
+
+	public int getState(){
+		return this.state;
+	}
+
+	public double getX(){
+		return this.ponto.getX();
+	}
+
+
+	public double getY(){
+		return this.ponto.getY();
+	}
+
+	public void setState(int s){
+		this.state = s;
+	}
+
+	public void setX(double x){
+		this.ponto.setX(x);
+	}
+	
+	public void setY(double y){
+		this.ponto.setY(y);
 	}
 
 	public void verificarFimExplosao(){
@@ -85,6 +129,34 @@ class Player {
 		}
 	}
 
+	public void explodir(){
+		this.state = 2;
+		this.explosionStart = System.currentTimeMillis();
+		this.explosionEnd = System.currentTimeMillis() + 2000;
+	}
+
+	public void verificarCoordenadas(){
+		if(this.getX() < 0.0) this.setX(0.0);
+		if(this.getX() >= GameLib.WIDTH) this.setX(GameLib.WIDTH - 1);
+		if(this.getY() < 25.0) this.setY(25.0);
+		if(this.getY() >= GameLib.HEIGHT) this.setY(GameLib.HEIGHT - 1);
+	}
+
+	public void moverParaCima(long delta){
+		this.ponto.moverParaCima(1, delta);
+	}
+
+	public void moverParaBaixo(long delta){
+		this.ponto.moverParaBaixo(1, delta);
+	}
+
+	public void moverParaEsquerda(long delta){
+		this.ponto.moverParaEsquerda(1, delta);
+	}
+
+	public void moverParaDireita(long delta){
+		this.ponto.moverParaDireita(1, delta);
+	}
 	
 }
 
@@ -231,6 +303,8 @@ public class Main {
 		double player_explosion_start = 0;					// instante do início da explosão
 		double player_explosion_end = 0;					// instante do final da explosão
 		long player_nextShot = currentTime;					// instante a partir do qual pode haver um próximo tiro
+
+		Player p1 = new Player();
 
 		/* variáveis dos projéteis disparados pelo player */
 		
