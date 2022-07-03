@@ -1,4 +1,7 @@
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /***********************************************************************/
 /*                                                                     */
@@ -42,6 +45,8 @@ class Ponto {
 		this.Y = y;
 	}
 
+
+
 	public void moverParaCima(double y, long delta){
 		this.Y -= y*delta*this.velocidadeY;
 	}
@@ -77,6 +82,7 @@ class Player {
 		this.explosionEnd = 0;
 		this.nextShot = System.currentTimeMillis();
 	}
+
 
 	public double getRadius(){
 		return this.radius;
@@ -145,6 +151,10 @@ class Player {
 	public void moverParaCima(long delta){
 		this.ponto.moverParaCima(1, delta);
 	}
+	
+	public void moverParaDireita(long delta){
+		this.ponto.moverParaDireita(1, delta);
+	}
 
 	public void moverParaBaixo(long delta){
 		this.ponto.moverParaBaixo(1, delta);
@@ -152,10 +162,6 @@ class Player {
 
 	public void moverParaEsquerda(long delta){
 		this.ponto.moverParaEsquerda(1, delta);
-	}
-
-	public void moverParaDireita(long delta){
-		this.ponto.moverParaDireita(1, delta);
 	}
 
 	public void setExplosionStart(double time) {
@@ -201,15 +207,58 @@ class Enemy2{
 
 }
 
-class Projectiles{
-	private int states;					// estados
+
+class Projectile{
+	private int state;					// estados
 	private Ponto ponto;
 
-	private double projectile_radius;
+	private double radius;
 
-	public Projectiles() {
-		this.states = 0;
+	// public Projectile() {
+	// 	this.state = 0;
+	// }
+
+	public Projectile(Player p){
+		this.state = 1;
+		this.ponto = new Ponto(p.getX(), p.getY() - 2 * p.getRadius(), 0.0, -1.0);
+		this.radius = 0;
 	}
+
+
+	public void setState(int s){
+		this.state = s;
+	}
+
+	public int getState(){
+		return this.state;
+	}
+
+	public double getX(){
+		return this.ponto.getX();
+	}
+
+
+	public double getY(){
+		return this.ponto.getY();
+	}
+
+
+	public void setX(double x){
+		this.ponto.setX(x);
+	}
+	
+	public void setY(double y){
+		this.ponto.setY(y);
+	}
+
+	public void moverParaCima(long delta){
+		this.ponto.moverParaCima(1, delta*-1);
+	}
+	
+	public void moverParaDireita(long delta){
+		this.ponto.moverParaDireita(1, delta);
+	}
+	
 }
 
 class Stars {
@@ -307,6 +356,10 @@ public class Main {
 		/* variáveis do player */
 
 		Player p1 = new Player();
+		List<Projectile> projectiles = new ArrayList<Projectile>();
+
+
+	
 
 		/* variáveis dos projéteis disparados pelo player */
 		
@@ -472,15 +525,16 @@ public class Main {
 			}
 			
 			/* colisões projeteis (player) - inimigos */
+
 			
-			for(int k = 0; k < projectile_states.length; k++){
+			for(Projectile p : projectiles){
 				
 				for(int i = 0; i < enemy1_states.length; i++){
 										
 					if(enemy1_states[i] == ACTIVE){
 					
-						double dx = enemy1_X[i] - projectile_X[k];
-						double dy = enemy1_Y[i] - projectile_Y[k];
+						double dx = enemy1_X[i] - p.getX();
+						double dy = enemy1_Y[i] - p.getY();
 						double dist = Math.sqrt(dx * dx + dy * dy);
 						
 						if(dist < enemy1_radius){
@@ -496,8 +550,8 @@ public class Main {
 					
 					if(enemy2_states[i] == ACTIVE){
 						
-						double dx = enemy2_X[i] - projectile_X[k];
-						double dy = enemy2_Y[i] - projectile_Y[k];
+						double dx = enemy2_X[i] - p.getX();
+						double dy = enemy2_Y[i] - p.getY();
 						double dist = Math.sqrt(dx * dx + dy * dy);
 						
 						if(dist < enemy2_radius){
@@ -516,22 +570,22 @@ public class Main {
 			
 			/* projeteis (player) */
 			
-			for(int i = 0; i < projectile_states.length; i++){
-				
-				if(projectile_states[i] == ACTIVE){
+			for (Projectile p : projectiles) {
+				if(p.getState() == ACTIVE){
 					
 					/* verificando se projétil saiu da tela */
-					if(projectile_Y[i] < 0) {
+					if(p.getY() < 0) {
 						
-						projectile_states[i] = INACTIVE;
+						p.setState(INACTIVE);
 					}
 					else {
 					
-						projectile_X[i] += projectile_VX[i] * delta;
-						projectile_Y[i] += projectile_VY[i] * delta;
+						p.moverParaDireita(delta);
+						p.moverParaCima(delta);
 					}
 				}
 			}
+
 			
 			/* projeteis (inimigos) */
 			
@@ -747,17 +801,13 @@ public class Main {
 					
 					if(currentTime > p1.getNextShot()){
 						
-						int free = findFreeIndex(projectile_states);
-												
-						if(free < projectile_states.length){
+						// int free = findFreeIndex(projectile_states);
+
+						Projectile pro = new Projectile(p1);
+						projectiles.add(pro);
 							
-							projectile_X[free] = p1.getX();
-							projectile_Y[free] = p1.getY() - 2 * p1.getRadius();
-							projectile_VX[free] = 0.0;
-							projectile_VY[free] = -1.0;
-							projectile_states[free] = ACTIVE;
-							p1.setNextShot(currentTime+100);
-						}
+						p1.setNextShot(currentTime+100);
+						
 					}	
 				}
 			}
@@ -807,17 +857,17 @@ public class Main {
 			}
 				
 			/* deenhando projeteis (player) */
-			
-			for(int i = 0; i < projectile_states.length; i++){
-				
-				if(projectile_states[i] == ACTIVE){
+
+			for (Projectile p : projectiles) {
+				if(p.getState() == ACTIVE){
 					
 					GameLib.setColor(Color.GREEN);
-					GameLib.drawLine(projectile_X[i], projectile_Y[i] - 5, projectile_X[i], projectile_Y[i] + 5);
-					GameLib.drawLine(projectile_X[i] - 1, projectile_Y[i] - 3, projectile_X[i] - 1, projectile_Y[i] + 3);
-					GameLib.drawLine(projectile_X[i] + 1, projectile_Y[i] - 3, projectile_X[i] + 1, projectile_Y[i] + 3);
+					GameLib.drawLine(p.getX(), p.getY() - 5, p.getX(), p.getY() + 5);
+					GameLib.drawLine(p.getX() - 1, p.getY() - 3, p.getX() - 1, p.getY() + 3);
+					GameLib.drawLine(p.getX() + 1, p.getY() - 3, p.getX() + 1, p.getY() + 3);
 				}
 			}
+		
 			
 			/* desenhando projeteis (inimigos) */
 		
