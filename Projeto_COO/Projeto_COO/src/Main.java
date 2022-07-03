@@ -192,11 +192,136 @@ class Enemy{
 	public Enemy() {
 		this.state = 0;
 	}
+
+
 }
 
 class Enemy1{
-	private Enemy e;
-	private long enemy_nextShoot;				// instantes do próximo tiro
+	private long nextShoot;				// instantes do próximo tiro
+	private Ponto ponto;						// coordenadas
+
+	private int state;					// estados
+	private double angle;				// ângulos (indicam direção do movimento)
+	private double RV;					// velocidades de rotação
+	private double explosion_start;		// instantes dos inícios das explosões
+	private double explosion_end;		// instantes dos finais da explosões
+	private double  radius;				// raio (tamanho do inimigo 1)
+	private long nextEnemy;	
+
+	public Enemy1(){
+		this.ponto = new Ponto(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0, 0.20 + Math.random() * 0.15);
+		this.angle = (3 * Math.PI) / 2;
+		this.RV = 0.0;
+		this.state = 1;
+		this.nextShoot = System.currentTimeMillis() + 500;
+		this.nextEnemy = System.currentTimeMillis() + 500;
+	}
+
+	public double getY(){
+		return this.ponto.getY();
+	}
+
+	public double getX(){
+		return this.ponto.getX();
+	}
+
+	public long getNextEnemy() {
+		return nextEnemy;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public double getRV() {
+		return RV;
+	}
+
+	public double getExplosion_start() {
+		return explosion_start;
+	}
+
+	public double getExplosion_end() {
+		return explosion_end;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
+	public long getNextShoot() {
+		return nextShoot;
+	}
+	
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
+	public void setRV(double rV) {
+		RV = rV;
+	}
+	public void setExplosion_start(double explosion_start) {
+		this.explosion_start = explosion_start;
+	}
+
+	public void setExplosion_end(double explosion_end) {
+		this.explosion_end = explosion_end;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public void setNextEnemy(long nextEnemy) {
+		this.nextEnemy = nextEnemy;
+	}
+
+	public void setNextShoot(long nextShoot) {
+		this.nextShoot = nextShoot;
+	}
+
+	public void explodir(){
+		setState(2);
+		setExplosion_start(System.currentTimeMillis());
+		setExplosion_end(System.currentTimeMillis() + 500);
+	}
+
+	public boolean verificarSaiuDaTela(){
+		if(this.getY() >  GameLib.HEIGHT + 10) {
+			this.setState(0);
+			return true;
+		}
+		return false;
+
+	}
+
+	public boolean verificarTerminoExplosao(){
+		if(this.getState() == 2){
+			if (System.currentTimeMillis() > this.getExplosion_end()){
+				this.setState(0);
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	public void moverParaCima(long delta) {
+		this.ponto.moverParaCima(Math.cos(this.getAngle()), delta);
+	}
+
+
+	public void moverParaDireita(long delta){
+		this.ponto.moverParaDireita(Math.cos(this.getAngle()), delta);
+	}
 }
 
 
@@ -214,14 +339,17 @@ class Projectile{
 
 	private double radius;
 
-	// public Projectile() {
-	// 	this.state = 0;
-	// }
 
 	public Projectile(Player p){
 		this.state = 1;
 		this.ponto = new Ponto(p.getX(), p.getY() - 2 * p.getRadius(), 0.0, -1.0);
 		this.radius = 0;
+	}
+
+	public Projectile(Enemy1 e){
+		this.state = 1;
+		this.ponto = new Ponto(e.getX(), e.getY(), Math.cos(e.getAngle()) * 0.45, Math.sin(e.getAngle()) * 0.45 * (-1.0));
+		this.radius = 2.0;
 	}
 
 
@@ -359,16 +487,6 @@ public class Main {
 		List<Projectile> projectiles = new ArrayList<Projectile>();
 
 
-	
-
-		/* variáveis dos projéteis disparados pelo player */
-		
-		int [] projectile_states = new int[10];					// estados
-		double [] projectile_X = new double[10];				// coordenadas x
-		double [] projectile_Y = new double[10];				// coordenadas y
-		double [] projectile_VX = new double[10];				// velocidades no eixo x
-		double [] projectile_VY = new double[10];				// velocidades no eixo y
-
 		/* variáveis dos inimigos tipo 1 */
 		
 		int [] enemy1_states = new int[10];					// estados
@@ -423,7 +541,6 @@ public class Main {
 		
 		/* inicializações */
 		
-		for(int i = 0; i < projectile_states.length; i++) projectile_states[i] = INACTIVE;
 		for(int i = 0; i < e_projectile_states.length; i++) e_projectile_states[i] = INACTIVE;
 		for(int i = 0; i < enemy1_states.length; i++) enemy1_states[i] = INACTIVE;
 		for(int i = 0; i < enemy2_states.length; i++) enemy2_states[i] = INACTIVE;
