@@ -415,6 +415,7 @@ class Stars {
 	}
 }
 
+class E_Projectile {}
 
 
 public class Main {
@@ -490,7 +491,9 @@ public class Main {
 		Player p1 = new Player();
 		List<Projectile> projectiles = new ArrayList<Projectile>();
 		List<Enemy1> enemies1 = new ArrayList<Enemy1>();
-		
+		List<Enemy2> enemies2 = new ArrayList<Enemy2>();
+		List <E_Projectile> e_projectiles = new ArrayList<E_Projectile>();
+		List <Stars> stars = new ArrayList<Stars>();
 		/* variáveis dos inimigos tipo 2 */
 		
 		int [] enemy2_states = new int[10];					// estados
