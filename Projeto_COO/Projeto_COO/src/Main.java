@@ -369,6 +369,9 @@ class Projectile{
 		return this.ponto.getX();
 	}
 
+	public double getRadius(){
+		return this.radius;
+	}
 
 	public double getY(){
 		return this.ponto.getY();
@@ -414,9 +417,6 @@ class Stars {
 		}
 	}
 }
-
-class E_Projectile {}
-
 
 public class Main {
 	
@@ -492,7 +492,7 @@ public class Main {
 		List<Projectile> projectiles = new ArrayList<Projectile>();
 		List<Enemy1> enemies1 = new ArrayList<Enemy1>();
 		List<Enemy2> enemies2 = new ArrayList<Enemy2>();
-		List <E_Projectile> e_projectiles = new ArrayList<E_Projectile>();
+		List <Projectile> e_projectiles = new ArrayList<Projectile>();
 		List <Stars> stars = new ArrayList<Stars>();
 		/* variáveis dos inimigos tipo 2 */
 		
@@ -507,16 +507,7 @@ public class Main {
 		double enemy2_spawnX = GameLib.WIDTH * 0.20;				// coordenada x do próximo inimigo tipo 2 a aparecer
 		int enemy2_count = 0;							// contagem de inimigos tipo 2 (usada na "formação de voo")
 		double enemy2_radius = 12.0;						// raio (tamanho aproximado do inimigo 2)
-		long nextEnemy2 = currentTime + 7000;					// instante em que um novo inimigo 2 deve aparecer
-		
-		/* variáveis dos projéteis lançados pelos inimigos (tanto tipo 1, quanto tipo 2) */
-		
-		int [] e_projectile_states = new int[200];				// estados
-		double [] e_projectile_X = new double[200];				// coordenadas x
-		double [] e_projectile_Y = new double[200];				// coordenadas y
-		double [] e_projectile_VX = new double[200];				// velocidade no eixo x
-		double [] e_projectile_VY = new double[200];				// velocidade no eixo y
-		double e_projectile_radius = 2.0;					// raio (tamanho dos projéteis inimigos)
+		long nextEnemy2 = currentTime + 7000;					// instante em que um novo inimigo 2 deve aparecer	
 		
 		/* estrelas que formam o fundo de primeiro plano */
 		
@@ -594,13 +585,13 @@ public class Main {
 				
 				/* colisões player - projeteis (inimigo) */
 				
-				for(int i = 0; i < e_projectile_states.length; i++){
+				for(Projectile p : e_projectiles){
 					
-					double dx = e_projectile_X[i] - p1.getX();
-					double dy = e_projectile_Y[i] - p1.getY();
+					double dx = p.getX() - p1.getX();
+					double dy = p.getY() - p1.getY();
 					double dist = Math.sqrt(dx * dx + dy * dy);
 					
-					if(dist < (p1.getRadius() + e_projectile_radius) * 0.8){
+					if(dist < (p1.getRadius() + p.getRadius()) * 0.8){
 						
 						p1.explodir();
 					}
@@ -696,19 +687,18 @@ public class Main {
 			
 			/* projeteis (inimigos) */
 			
-			for(int i = 0; i < e_projectile_states.length; i++){
+			for(Projectile p : e_projectiles){
 				
-				if(e_projectile_states[i] == ACTIVE){
+				if(p.getState() == ACTIVE){
 					
 					/* verificando se projétil saiu da tela */
-					if(e_projectile_Y[i] > GameLib.HEIGHT) {
+					if(p.getY() > GameLib.HEIGHT) {
 						
-						e_projectile_states[i] = INACTIVE;
+						p.getState() = INACTIVE;
 					}
 					else {
-					
-						e_projectile_X[i] += e_projectile_VX[i] * delta;
-						e_projectile_Y[i] += e_projectile_VY[i] * delta;
+						p.moverParaDireita(delta);
+						p.moverParaCima(delta * -1);
 					}
 				}
 			}
@@ -732,17 +722,9 @@ public class Main {
 						
 						if(currentTime > e.getNextShoot() && e.getY() < p1.getY()){
 																							
-							int free = findFreeIndex(e_projectile_states);
-							
-							if(free < e_projectile_states.length){
-								
-								e_projectile_X[free] = e.getX();
-								e_projectile_Y[free] = e.getY();
-								e_projectile_VX[free] = Math.cos(e.getAngle()) * 0.45;
-								e_projectile_VY[free] = Math.sin(e.getAngle()) * 0.45 * (-1.0);
-								e_projectile_states[free] = ACTIVE;
-								
-								e.setNextShoot((long) (currentTime + 200 + Math.random() * 500));
+							Projectile e_p = new Projectile(e);
+							e_projectiles.add(e_p);
+							e.setNextShoot((long) (currentTime + 200 + Math.random() * 500));
 							}
 						}
 					}
@@ -802,14 +784,9 @@ public class Main {
 						if(shootNow){
 
 							double [] angles = { Math.PI/2 + Math.PI/8, Math.PI/2, Math.PI/2 - Math.PI/8 };
-							int [] freeArray = findFreeIndex(e_projectile_states, angles.length);
-
-							for(int k = 0; k < freeArray.length; k++){
-								
-								int free = freeArray[k];
-								
-								if(free < e_projectile_states.length){
-									
+							for(int j = 0; j < angles.length; j++){ // removendo os 5 primeiros elementos do array de projéteis inimigos
+								e_projectiles.remove(j);
+						
 									double a = angles[k] + Math.random() * Math.PI/6 - Math.PI/12;
 									double vx = Math.cos(a);
 									double vy = Math.sin(a);
@@ -819,8 +796,8 @@ public class Main {
 									e_projectile_VX[free] = vx * 0.30;
 									e_projectile_VY[free] = vy * 0.30;
 									e_projectile_states[free] = ACTIVE;
-								}
 							}
+							
 						}
 					}
 				}
