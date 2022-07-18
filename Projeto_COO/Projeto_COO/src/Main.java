@@ -727,7 +727,6 @@ public class Main {
 							}
 						}
 					}
-				}
 			}
 			
 			/* inimigos tipo 2 */
@@ -779,7 +778,7 @@ public class Main {
 							enemy2_angle[i] = 0.0;
 							shootNow = true;
 						}
-																		
+						/* 												
 						if(shootNow){
 
 							double [] angles = { Math.PI/2 + Math.PI/8, Math.PI/2, Math.PI/2 - Math.PI/8 };
@@ -790,21 +789,31 @@ public class Main {
 									double vx = Math.cos(a);
 									double vy = Math.sin(a);
 										
-									Projectile e_projectiles = new Projectile(e);
+									Projectile e_projectile = new Projectile(e);
+									e_projectiles.add((e_projectile));
 							}
 							
-						}
+						}*/
 					}
 				}
 			}
 			
 			/* verificando se novos inimigos (tipo 1) devem ser "lançados" */
+
+			if (enemies1.size() == 0) {
+				Enemy1 newEnemy1 = new Enemy1();
+					enemies1.add(newEnemy1);
+			}
 			
-			if(currentTime > enemies1.get(enemies1.size()-1).getNextShoot()){
+			else {
+				if(currentTime > enemies1.get(enemies1.size()-1).getNextShoot()){
 					
 					Enemy1 newEnemy1 = new Enemy1();
 					enemies1.add(newEnemy1);
+				}
 			}
+			
+			
 			
 			/* verificando se novos inimigos (tipo 2) devem ser "lançados" */
 			
