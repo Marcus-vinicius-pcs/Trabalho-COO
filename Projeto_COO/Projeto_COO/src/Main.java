@@ -205,16 +205,17 @@ class Enemy1{
 	private double RV;					// velocidades de rotação
 	private double explosion_start;		// instantes dos inícios das explosões
 	private double explosion_end;		// instantes dos finais da explosões
-	private double  radius;				// raio (tamanho do inimigo 1)
-	private long nextEnemy;	
+	private static double radius = 9.0;				// raio (tamanho do inimigo 1)
+	private static long nextEnemy;
+	
 
 	public Enemy1(){
+		nextEnemy = System.currentTimeMillis() + 500;
 		this.ponto = new Ponto(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0, 0.20 + Math.random() * 0.15);
 		this.angle = (3 * Math.PI) / 2;
 		this.RV = 0.0;
 		this.state = 1;
 		this.nextShoot = System.currentTimeMillis() + 500;
-		this.nextEnemy = System.currentTimeMillis() + 500;
 	}
 
 	public double getY(){
@@ -225,7 +226,7 @@ class Enemy1{
 		return this.ponto.getX();
 	}
 
-	public long getNextEnemy() {
+	public static long getNextEnemy() {
 		return nextEnemy;
 	}
 
@@ -280,8 +281,8 @@ class Enemy1{
 		this.radius = radius;
 	}
 
-	public void setNextEnemy(long nextEnemy) {
-		this.nextEnemy = nextEnemy;
+	public static void setNextEnemy(long nextEnemy) {
+		Enemy1.nextEnemy = nextEnemy;
 	}
 
 	public void setNextShoot(long nextShoot) {
@@ -315,7 +316,7 @@ class Enemy1{
 
 
 	public void moverParaCima(long delta) {
-		this.ponto.moverParaCima(Math.cos(this.getAngle()), delta);
+		this.ponto.moverParaCima(Math.sin(this.getAngle()), delta);
 	}
 
 
@@ -494,6 +495,7 @@ public class Main {
 		List<Enemy2> enemies2 = new ArrayList<Enemy2>();
 		List <Projectile> e_projectiles = new ArrayList<Projectile>();
 		List <Stars> stars = new ArrayList<Stars>();
+		
 		/* variáveis dos inimigos tipo 2 */
 		
 		int [] enemy2_states = new int[10];					// estados
@@ -697,7 +699,7 @@ public class Main {
 					}
 					else {
 						p.moverParaDireita(delta);
-						p.moverParaCima(delta * -1);
+						p.moverParaCima(delta);
 					}
 				}
 			}
@@ -799,19 +801,20 @@ public class Main {
 			}
 			
 			/* verificando se novos inimigos (tipo 1) devem ser "lançados" */
-
 			if (enemies1.size() == 0) {
 				Enemy1 newEnemy1 = new Enemy1();
-					enemies1.add(newEnemy1);
+				enemies1.add(newEnemy1);
+			}
+			else {
+				if(currentTime > Enemy1.getNextEnemy()){
+
+                    Enemy1 newEnemy1 = new Enemy1();
+                    enemies1.add(newEnemy1);
+            	}
+				
 			}
 			
-			else {
-				if(currentTime > enemies1.get(enemies1.size()-1).getNextShoot()){
-					
-					Enemy1 newEnemy1 = new Enemy1();
-					enemies1.add(newEnemy1);
-				}
-			}
+			
 			
 			
 			
