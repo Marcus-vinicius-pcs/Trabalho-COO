@@ -727,7 +727,6 @@ public class Main {
 							}
 						}
 					}
-				}
 			}
 			
 			/* inimigos tipo 2 */
@@ -779,7 +778,7 @@ public class Main {
 							enemy2_angle[i] = 0.0;
 							shootNow = true;
 						}
-																		
+						/* 												
 						if(shootNow){
 
 							double [] angles = { Math.PI/2 + Math.PI/8, Math.PI/2, Math.PI/2 - Math.PI/8 };
@@ -790,10 +789,11 @@ public class Main {
 									double vx = Math.cos(a);
 									double vy = Math.sin(a);
 										
-									Projectile e_projectiles = new Projectile(e);
+									Projectile e_projectile = new Projectile(e);
+									e_projectiles.add((e_projectile));
 							}
 							
-						}
+						}*/
 					}
 				}
 			}
