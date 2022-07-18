@@ -303,7 +303,7 @@ class Enemy1{
 
 	}
 
-	public void concluirExplosao(){
+	public boolean concluirExplosao(){
 		if(this.getState() == 2){
 			if (System.currentTimeMillis() > this.getExplosion_end()){
 				this.setState(0);
@@ -524,8 +524,7 @@ public class Main {
 		double background2_count = 0.0;
 		
 		/* inicializações */
-		
-		for(int i = 0; i < e_projectile_states.length; i++) e_projectile_states[i] = INACTIVE;
+
 		for(int i = 0; i < enemy2_states.length; i++) enemy2_states[i] = INACTIVE;
 		
 		for(int i = 0; i < background1_X.length; i++){
@@ -694,7 +693,7 @@ public class Main {
 					/* verificando se projétil saiu da tela */
 					if(p.getY() > GameLib.HEIGHT) {
 						
-						p.getState() = INACTIVE;
+						p.setState(INACTIVE);
 					}
 					else {
 						p.moverParaDireita(delta);
@@ -713,7 +712,7 @@ public class Main {
 					
 					/* verificando se inimigo saiu da tela */
 
-					e.verificarSaiuDaTela();
+					if(e.verificarSaiuDaTela());
 					else {
 					
 						e.moverParaDireita(delta);
@@ -787,15 +786,11 @@ public class Main {
 							for(int j = 0; j < angles.length; j++){ // removendo os 5 primeiros elementos do array de projéteis inimigos
 								e_projectiles.remove(j);
 						
-									double a = angles[k] + Math.random() * Math.PI/6 - Math.PI/12;
+									double a = angles[j] + Math.random() * Math.PI/6 - Math.PI/12;
 									double vx = Math.cos(a);
 									double vy = Math.sin(a);
 										
-									e_projectile_X[free] = enemy2_X[i];
-									e_projectile_Y[free] = enemy2_Y[i];
-									e_projectile_VX[free] = vx * 0.30;
-									e_projectile_VY[free] = vy * 0.30;
-									e_projectile_states[free] = ACTIVE;
+									Projectile e_projectiles = new Projectile(e);
 							}
 							
 						}
@@ -936,12 +931,12 @@ public class Main {
 			
 			/* desenhando projeteis (inimigos) */
 		
-			for(int i = 0; i < e_projectile_states.length; i++){
+			for(Projectile ep : e_projectiles){
 				
-				if(e_projectile_states[i] == ACTIVE){
+				if(ep.getState() == ACTIVE){
 	
 					GameLib.setColor(Color.RED);
-					GameLib.drawCircle(e_projectile_X[i], e_projectile_Y[i], e_projectile_radius);
+					GameLib.drawCircle(ep.getX(), ep.getY(), ep.getRadius());
 				}
 			}
 			
