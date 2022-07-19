@@ -634,14 +634,19 @@ public class Main {
 		
 		long delta;
 		long currentTime = System.currentTimeMillis();
+		
 
 		/* variáveis do player */
 
 		Player p1 = new Player();
 		List<Projectile> projectiles = new ArrayList<Projectile>();
 		List<Enemy1> enemies1 = new ArrayList<Enemy1>();
+		List<Enemy1> enemies1Remove = new ArrayList<Enemy1>();
 		Enemy1.setNextEnemy(currentTime + 2000);
+
 		List<Enemy2> enemies2 = new ArrayList<Enemy2>();
+		List<Enemy2> enemies2Remove = new ArrayList<Enemy2>();
+
 		Enemy2.setNext_enemy2(currentTime + 7000);
 		Enemy2.setSpawn(Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8);
 		
@@ -712,6 +717,10 @@ public class Main {
 			/* Já a variável "currentTime" nos dá o timestamp atual.  */
 			
 			currentTime = System.currentTimeMillis();
+
+			// Exclui enemigos das listas
+			enemies1.removeAll(enemies1Remove);
+			enemies2.removeAll(enemies2Remove);
 			
 			/***************************/
 			/* Verificação de colisões */
@@ -840,14 +849,13 @@ public class Main {
 			
 			for(Enemy1 e : enemies1){
 				
-				// e.concluirExplosao();
-				if(e.concluirExplosao());
+				if(e.concluirExplosao()) enemies1Remove.add(e);
 				
 				if(e.getState() == ACTIVE){
 					
 					/* verificando se inimigo saiu da tela */
 
-					if(e.verificarSaiuDaTela());
+					if(e.verificarSaiuDaTela()) enemies1Remove.add(e);
 					else {
 					
 						e.moverParaDireita(delta);
@@ -872,7 +880,7 @@ public class Main {
 					if(currentTime > enemy.getExplosion_end()){
 						
 						enemy.setState(INACTIVE);
-						// enemies2.remove(enemy);
+						enemies2Remove.add(enemy);
 					}
 				}
 
@@ -881,7 +889,7 @@ public class Main {
 					if(	enemy.getX() < -10 || enemy.getX() > GameLib.WIDTH + 10 ) {
 						
 						enemy.setState(INACTIVE);
-						
+						enemies2Remove.add(enemy);
 					}
 					else {
 						
