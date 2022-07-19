@@ -828,7 +828,8 @@ public class Main {
 			
 			for(Enemy1 e : enemies1){
 				
-				e.concluirExplosao();
+				// e.concluirExplosao();
+				if(e.concluirExplosao());
 				
 				if(e.getState() == ACTIVE){
 					
@@ -859,7 +860,7 @@ public class Main {
 					if(currentTime > enemy.getExplosion_end()){
 						
 						enemy.setState(INACTIVE);
-						enemies2.remove(enemy);
+						// enemies2.remove(enemy);
 					}
 				}
 
