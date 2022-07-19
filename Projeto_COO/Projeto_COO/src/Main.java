@@ -218,7 +218,6 @@ class Enemy1{
 	
 
 	public Enemy1(){
-		nextEnemy = System.currentTimeMillis() + 500;
 		this.ponto = new Ponto(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0, 0.20 + Math.random() * 0.15);
 		this.angle = (3 * Math.PI) / 2;
 		this.RV = 0.0;
@@ -615,8 +614,11 @@ public class Main {
 		Player p1 = new Player();
 		List<Projectile> projectiles = new ArrayList<Projectile>();
 		List<Enemy1> enemies1 = new ArrayList<Enemy1>();
+		Enemy1.setNextEnemy(currentTime + 2000);
 		List<Enemy2> enemies2 = new ArrayList<Enemy2>();
+		Enemy2.setNext_enemy2(currentTime + 7000);
 		Enemy2.setSpawn(Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8);
+		
 		List <Projectile> e_projectiles = new ArrayList<Projectile>();
 		List <Stars> stars_1 = new ArrayList<Stars>();
 		List <Stars> stars_2 = new ArrayList<Stars>();
@@ -773,11 +775,11 @@ public class Main {
 						double dy = enemy.getY() - p.getY();
 						double dist = Math.sqrt(dx * dx + dy * dy);
 
-						if(dist < enemy2_radius){
+						if(dist < enemy.getRadius()){
 							
 							enemy.setState(EXPLODING);
 							enemy.setExplosion_start(currentTime);
-							enemy.setExplosion_start(currentTime + 500);
+							enemy.setExplosion_end(currentTime + 500);
 						}
 					}
 				}
@@ -905,8 +907,7 @@ public class Main {
 
 							double [] angles = { Math.PI/2 + Math.PI/8, Math.PI/2, Math.PI/2 - Math.PI/8 };
 							for(int j = 0; j < angles.length; j++){ // removendo os 5 primeiros elementos do array de projéteis inimigos
-								e_projectiles.remove(j);
-						
+								
 									double a = angles[j] + Math.random() * Math.PI/6 - Math.PI/12;
 									double vx = Math.cos(a);
 									double vy = Math.sin(a);
@@ -922,15 +923,16 @@ public class Main {
 			
 			
 			/* verificando se novos inimigos (tipo 1) devem ser "lançados" */
-			if (enemies1.size() == 0) {
+			if (enemies1.size() == 0 && currentTime > Enemy1.getNextEnemy()) {
 				Enemy1 newEnemy1 = new Enemy1();
 				enemies1.add(newEnemy1);
+				Enemy1.setNextEnemy(currentTime + 500);
 			}
 			else {
 				if(currentTime > Enemy1.getNextEnemy()){
-
                     Enemy1 newEnemy1 = new Enemy1();
                     enemies1.add(newEnemy1);
+					Enemy1.setNextEnemy(currentTime + 500);
             	}
 				
 			}
