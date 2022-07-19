@@ -399,10 +399,10 @@ class Projectile{
 
 class Stars {
 	private Ponto p;
-	private Double count;
+	private static double count;
 
 	public Stars(int tipo) throws Exception {
-		this.count = 0.0;
+		++count;
 
 		if (tipo == 1) // estrelas de primeiro plano
 		{
@@ -494,7 +494,8 @@ public class Main {
 		List<Enemy1> enemies1 = new ArrayList<Enemy1>();
 		List<Enemy2> enemies2 = new ArrayList<Enemy2>();
 		List <Projectile> e_projectiles = new ArrayList<Projectile>();
-		List <Stars> stars = new ArrayList<Stars>();
+		List <Stars> stars1 = new ArrayList<Stars>();
+		List <Stars> stars2 = new ArrayList<Stars>();
 		
 		/* variáveis dos inimigos tipo 2 */
 		
