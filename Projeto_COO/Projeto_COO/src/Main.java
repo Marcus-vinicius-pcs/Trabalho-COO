@@ -352,13 +352,12 @@ class Enemy2{
 
 	public Enemy2()
 	{
-		Enemy2.enemy_spawnX = GameLib.WIDTH * 0.20;
-		this.ponto = new Ponto(enemy_spawnX, -10, 0.42, 0.42);
 		this.angle = (3 * Math.PI) / 2;
 		this.RV = 0;
 		this.state = 1;
 		next_enemy2 = System.currentTimeMillis() + 7000;
 		count = count+1;
+		this.ponto = new Ponto(enemy_spawnX, -10, 0.42, 0.42);
 	}
 
 	public static long getNext_enemy2() {
@@ -369,7 +368,7 @@ class Enemy2{
 		Enemy2.next_enemy2 = next_enemy2;
 	}
 
-	public void setSpawn(double spawn){
+	public static void setSpawn(double spawn){
 		Enemy2.enemy_spawnX = spawn;
 	}
 
@@ -617,6 +616,7 @@ public class Main {
 		List<Projectile> projectiles = new ArrayList<Projectile>();
 		List<Enemy1> enemies1 = new ArrayList<Enemy1>();
 		List<Enemy2> enemies2 = new ArrayList<Enemy2>();
+		Enemy2.setSpawn(Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8);
 		List <Projectile> e_projectiles = new ArrayList<Projectile>();
 		List <Stars> stars_1 = new ArrayList<Stars>();
 		List <Stars> stars_2 = new ArrayList<Stars>();
@@ -852,7 +852,7 @@ public class Main {
 			}
 			
 			/* inimigos tipo 2 */
-
+			
 			for (Enemy2 enemy : enemies2) {
 				if( enemy.getState() == EXPLODING){
 					
@@ -940,18 +940,15 @@ public class Main {
 			if(currentTime > Enemy2.getNext_enemy2()){
 				
 				Enemy2 newEnemy2 = new Enemy2();
-				newEnemy2.setSpawn(Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8);
+				
 				
 				if(Enemy2.getCount() < 10){
 					enemies2.add(newEnemy2);
 					Enemy2.setNext_enemy2( currentTime + 120);
 				}
 				else {
-					
-					Enemy2.setCount(0);
-					
-					
-					newEnemy2.setSpawn(Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8);
+					Enemy2.setSpawn(Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8);
+					Enemy2.setCount(0);					
 					Enemy2.setNext_enemy2((long) (currentTime + 3000 + Math.random() * 3000));
 				}
 
