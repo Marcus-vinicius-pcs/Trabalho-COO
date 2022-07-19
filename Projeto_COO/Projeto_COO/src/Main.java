@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.lang.reflect.InaccessibleObjectException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -344,19 +345,19 @@ class Enemy2{
 	private double RV;
 	private double explosion_end;
 	private double explosion_start;
-	private double enemy_spawnX;
+	private static double enemy_spawnX;
 	private static int count = 0;							// contagem de inimigos tipo 2 (usada na "formação de voo")
 	private double radius = 12.0;
 	private static long next_enemy2;
 
 	public Enemy2()
 	{
-		this.ponto = new Ponto(0.42, -10, 0.42, 0.42);
-		this.enemy_spawnX = GameLib.WIDTH * 0.20;
+		Enemy2.enemy_spawnX = GameLib.WIDTH * 0.20;
+		this.ponto = new Ponto(enemy_spawnX, -10, 0.42, 0.42);
 		this.angle = (3 * Math.PI) / 2;
 		this.RV = 0;
 		this.state = 1;
-		this.next_enemy2 = System.currentTimeMillis() + 7000;
+		next_enemy2 = System.currentTimeMillis() + 7000;
 		count = count+1;
 	}
 
@@ -369,7 +370,7 @@ class Enemy2{
 	}
 
 	public void setSpawn(double spawn){
-		this.enemy_spawnX = spawn;
+		Enemy2.enemy_spawnX = spawn;
 	}
 
 	public double getY(){
@@ -617,8 +618,8 @@ public class Main {
 		List<Enemy1> enemies1 = new ArrayList<Enemy1>();
 		List<Enemy2> enemies2 = new ArrayList<Enemy2>();
 		List <Projectile> e_projectiles = new ArrayList<Projectile>();
-		List <Stars> stars1 = new ArrayList<Stars>();
-		List <Stars> stars2 = new ArrayList<Stars>();
+		List <Stars> stars_1 = new ArrayList<Stars>();
+		List <Stars> stars_2 = new ArrayList<Stars>();
 		
 		/* variáveis dos inimigos tipo 2 */
 		
@@ -858,6 +859,7 @@ public class Main {
 					if(currentTime > enemy.getExplosion_end()){
 						
 						enemy.setState(INACTIVE);
+						enemies2.remove(enemy);
 					}
 				}
 
@@ -866,6 +868,7 @@ public class Main {
 					if(	enemy.getX() < -10 || enemy.getX() > GameLib.WIDTH + 10 ) {
 						
 						enemy.setState(INACTIVE);
+						
 					}
 					else {
 						
@@ -937,6 +940,7 @@ public class Main {
 			if(currentTime > Enemy2.getNext_enemy2()){
 				
 				Enemy2 newEnemy2 = new Enemy2();
+				newEnemy2.setSpawn(Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8);
 				
 				if(Enemy2.getCount() < 10){
 					enemies2.add(newEnemy2);
@@ -945,7 +949,8 @@ public class Main {
 				else {
 					
 					Enemy2.setCount(0);
-					enemies2.removeAll(enemies2);
+					
+					
 					newEnemy2.setSpawn(Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8);
 					Enemy2.setNext_enemy2((long) (currentTime + 3000 + Math.random() * 3000));
 				}
