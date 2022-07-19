@@ -617,8 +617,8 @@ public class Main {
 		List<Enemy1> enemies1 = new ArrayList<Enemy1>();
 		List<Enemy2> enemies2 = new ArrayList<Enemy2>();
 		List <Projectile> e_projectiles = new ArrayList<Projectile>();
-		List <Stars> stars1 = new ArrayList<Stars>();
-		List <Stars> stars2 = new ArrayList<Stars>();
+		List <Stars> stars_1 = new ArrayList<Stars>();
+		List <Stars> stars_2 = new ArrayList<Stars>();
 		
 		/* variáveis dos inimigos tipo 2 */
 		
