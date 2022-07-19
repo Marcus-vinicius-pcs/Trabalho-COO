@@ -519,27 +519,53 @@ class Projectile{
 	
 }
 
-class Stars {
+class Star1 {
 	private Ponto p;
-	private static double count;
+	private static double count = 0;
+	private static double speed = 0.070;
 
-	public Stars(int tipo) throws Exception {
-		++count;
-
-		if (tipo == 1) // estrelas de primeiro plano
-		{
-			this.p = new Ponto(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, 0.070, 0);
-		}
-		else if (tipo == 2) // estrelas de segundo plano
-		{
-			this.p = new Ponto(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, 0.045, 0);
-		}
-
-		else {
-			throw new Exception("Tipo de estrela inválido");
-		}
+	public Star1() {
+		Star1.count = Star1.count + 1;
+		this.p = new Ponto(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, this.speed, 0);
 	}
+
+	public static void setCount(double newcount){
+		Star1.count += newcount;
+	}
+
+	public static double getSpeed(){
+		return Star1.speed;
+	}
+
+	public double getX(){return this.p.getx();}
+	public double getY(){return this.p.getY();}
+	public static double getCount(){return Star1.count;}
 }
+
+class Star2 {
+	private Ponto p;
+	private static double count = 0;
+	private static double speed = 0.045;
+
+	public Star2() {
+		Star2.count = Star2.count + 1;
+		this.p = new Ponto(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, Star2.speed, 0);
+	}
+
+	public static void setCount(double newcount){
+		Star2.count += newcount;
+	}
+
+	public static double getSpeed(){
+		return Star2.speed;
+	}
+
+	public double getX(){return this.p.getx();}
+	public double getY(){return this.p.getY();}
+	public static double getCount(){return Star2.count;}
+
+}
+
 
 public class Main {
 	
@@ -620,23 +646,9 @@ public class Main {
 		Enemy2.setSpawn(Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8);
 		
 		List <Projectile> e_projectiles = new ArrayList<Projectile>();
-		List <Stars> stars_1 = new ArrayList<Stars>();
-		List <Stars> stars_2 = new ArrayList<Stars>();
-		
-		/* variáveis dos inimigos tipo 2 */
-		
-		int [] enemy2_states = new int[10];					// estados
-		double [] enemy2_X = new double[10];					// coordenadas x
-		double [] enemy2_Y = new double[10];					// coordenadas y
-		double [] enemy2_V = new double[10];					// velocidades
-		double [] enemy2_angle = new double[10];				// ângulos (indicam direção do movimento)
-		double [] enemy2_RV = new double[10];					// velocidades de rotação
-		double [] enemy2_explosion_start = new double[10];			// instantes dos inícios das explosões
-		double [] enemy2_explosion_end = new double[10];			// instantes dos finais das explosões
-		double enemy2_spawnX = GameLib.WIDTH * 0.20;				// coordenada x do próximo inimigo tipo 2 a aparecer
-		int enemy2_count = 0;							// contagem de inimigos tipo 2 (usada na "formação de voo")
-		double enemy2_radius = 12.0;						// raio (tamanho aproximado do inimigo 2)
-		long nextEnemy2 = currentTime + 7000;					// instante em que um novo inimigo 2 deve aparecer	
+		List <Star1> stars_1 = new ArrayList<Star1>();
+		List <Star2> stars_2 = new ArrayList<Star2>();
+			
 		
 		/* estrelas que formam o fundo de primeiro plano */
 		
@@ -654,16 +666,14 @@ public class Main {
 		
 		/* inicializações */
 		
-		for(int i = 0; i < background1_X.length; i++){
+		for(int i = 0; i < 20; i ++){
 			
-			background1_X[i] = Math.random() * GameLib.WIDTH;
-			background1_Y[i] = Math.random() * GameLib.HEIGHT;
+			stars_1.add(new Stars(1));
 		}
 		
-		for(int i = 0; i < background2_X.length; i++){
+		for(int i = 0; i < 50; i++){
 			
-			background2_X[i] = Math.random() * GameLib.WIDTH;
-			background2_Y[i] = Math.random() * GameLib.HEIGHT;
+			stars_2.add(new Stars(2));
 		}
 						
 		/* iniciado interface gráfica */
@@ -1009,21 +1019,20 @@ public class Main {
 			/* desenhando plano fundo distante */
 			
 			GameLib.setColor(Color.DARK_GRAY);
-			background2_count += background2_speed * delta;
 			
-			for(int i = 0; i < background2_X.length; i++){
+			Star2.setCount(Star2.getSpeed() * delta);
+			for(Star2 star : stars_2){
 				
-				GameLib.fillRect(background2_X[i], (background2_Y[i] + background2_count) % GameLib.HEIGHT, 2, 2);
+				GameLib.fillRect(star.getX(), (star.getY() + star.getCount()) % GameLib.HEIGHT, 2, 2);
 			}
 			
 			/* desenhando plano de fundo próximo */
 			
 			GameLib.setColor(Color.GRAY);
-			background1_count += background1_speed * delta;
-			
-			for(int i = 0; i < background1_X.length; i++){
+			Star1.setCount(Star1.getSpeed() * delta);
+			for(Star1 star : stars_1){
 				
-				GameLib.fillRect(background1_X[i], (background1_Y[i] + background1_count) % GameLib.HEIGHT, 3, 3);
+				GameLib.fillRect(star.getX(), (star.getY() + star.getCount) % GameLib.HEIGHT, 3, 3);
 			}
 						
 			/* desenhando player */
