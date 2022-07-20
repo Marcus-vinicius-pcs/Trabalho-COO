@@ -537,7 +537,7 @@ class Star1 {
 		return Star1.speed;
 	}
 
-	public double getX(){return this.p.getx();}
+	public double getX(){return this.p.getX();}
 	public double getY(){return this.p.getY();}
 	public static double getCount(){return Star1.count;}
 }
@@ -560,7 +560,7 @@ class Star2 {
 		return Star2.speed;
 	}
 
-	public double getX(){return this.p.getx();}
+	public double getX(){return this.p.getX();}
 	public double getY(){return this.p.getY();}
 	public static double getCount(){return Star2.count;}
 
@@ -655,30 +655,16 @@ public class Main {
 		List <Star2> stars_2 = new ArrayList<Star2>();
 			
 		
-		/* estrelas que formam o fundo de primeiro plano */
-		
-		double [] background1_X = new double[20];
-		double [] background1_Y = new double[20];
-		double background1_speed = 0.070;
-		double background1_count = 0.0;
-		
-		/* estrelas que formam o fundo de segundo plano */
-		
-		double [] background2_X = new double[50];
-		double [] background2_Y = new double[50];
-		double background2_speed = 0.045;
-		double background2_count = 0.0;
-		
 		/* inicializações */
 		
 		for(int i = 0; i < 20; i ++){
 			
-			stars_1.add(new Stars(1));
+			stars_1.add(new Star1());
 		}
 		
 		for(int i = 0; i < 50; i++){
 			
-			stars_2.add(new Stars(2));
+			stars_2.add(new Star2());
 		}
 						
 		/* iniciado interface gráfica */
@@ -1040,7 +1026,7 @@ public class Main {
 			Star1.setCount(Star1.getSpeed() * delta);
 			for(Star1 star : stars_1){
 				
-				GameLib.fillRect(star.getX(), (star.getY() + star.getCount) % GameLib.HEIGHT, 3, 3);
+				GameLib.fillRect(star.getX(), (star.getY() + star.getCount()) % GameLib.HEIGHT, 3, 3);
 			}
 						
 			/* desenhando player */
