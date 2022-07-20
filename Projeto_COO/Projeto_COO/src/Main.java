@@ -1,6 +1,8 @@
+import GameLib.*;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import Jogo.*;
 
 /***********************************************************************/
 /*                                                                     */
@@ -184,23 +186,6 @@ class Player {
 	
 }
 
-class Enemy{
-	private Ponto ponto;						// coordenadas
-
-	private int state;					// estados
-	private double angle;				// ângulos (indicam direção do movimento)
-	private double RV;					// velocidades de rotação
-	private double explosion_start;		// instantes dos inícios das explosões
-	private double explosion_end;		// instantes dos finais da explosões
-	private double  radius;				// raio (tamanho do inimigo 1)
-	private long nextEnemy;					// instante em que um novo inimigo 1 deve aparecer
-
-	public Enemy() {
-		this.state = 0;
-	}
-
-
-}
 
 class Enemy1{
 	private long nextShoot;				// instantes do próximo tiro
@@ -283,7 +268,7 @@ class Enemy1{
 	}
 
 	public void setRadius(double radius) {
-		this.radius = radius;
+		Enemy1.radius = radius;
 	}
 
 	public static void setNextEnemy(long nextEnemy) {
@@ -524,7 +509,7 @@ class Star1 {
 
 	public Star1() {
 		Star1.count = Star1.count + 1;
-		this.p = new Ponto(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, this.speed, 0);
+		this.p = new Ponto(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, Star1.speed, 0);
 	}
 
 	public static void setCount(double newcount){
@@ -582,43 +567,6 @@ public class Main {
 		while(System.currentTimeMillis() < time) Thread.yield();
 	}
 	
-	/* Encontra e devolve o primeiro índice do  */
-	/* array referente a uma posição "inativa". */
-	
-	public static int findFreeIndex(int [] stateArray){
-		
-		int i;
-		
-		for(i = 0; i < stateArray.length; i++){
-			
-			if(stateArray[i] == INACTIVE) break;
-		}
-		
-		return i;
-	}
-	
-	/* Encontra e devolve o conjunto de índices (a quantidade */
-	/* de índices é defnida através do parâmetro "amount") do */
-	/* array referente a posições "inativas".                 */ 
-
-	public static int [] findFreeIndex(int [] stateArray, int amount){
-
-		int i, k;
-		int [] freeArray = new int[amount];
-
-		for(i = 0; i < freeArray.length; i++) freeArray[i] = stateArray.length; 
-		
-		for(i = 0, k = 0; i < stateArray.length && k < amount; i++){
-				
-			if(stateArray[i] == INACTIVE) { 
-				
-				freeArray[k] = i; 
-				k++;
-			}
-		}
-		
-		return freeArray;
-	}
 	
 	/* Método principal */
 	
@@ -1015,7 +963,7 @@ public class Main {
 			Star2.setCount(Star2.getSpeed() * delta);
 			for(Star2 star : stars_2){
 				
-				GameLib.fillRect(star.getX(), (star.getY() + star.getCount()) % GameLib.HEIGHT, 2, 2);
+				GameLib.fillRect(star.getX(), (star.getY() + Star2.getCount()) % GameLib.HEIGHT, 2, 2);
 			}
 			
 			/* desenhando plano de fundo próximo */
@@ -1024,7 +972,7 @@ public class Main {
 			Star1.setCount(Star1.getSpeed() * delta);
 			for(Star1 star : stars_1){
 				
-				GameLib.fillRect(star.getX(), (star.getY() + star.getCount()) % GameLib.HEIGHT, 3, 3);
+				GameLib.fillRect(star.getX(), (star.getY() + Star1.getCount()) % GameLib.HEIGHT, 3, 3);
 			}
 						
 			/* desenhando player */
