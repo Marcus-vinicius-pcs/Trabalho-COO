@@ -52,6 +52,14 @@ class Ponto {
 		return this.velocidadeY;
 	}
 
+	public void setVX(double vx){
+		this.velocidadeX = vx;
+	}
+
+	
+	public void setVY(double vy){
+		this.velocidadeY = vy;
+	}
 
 
 	public void moverParaCima(double y, long delta){
@@ -78,6 +86,7 @@ class Player {
 	private double explosionStart;
 	private double explosionEnd;
 	private long nextShot;
+	private long startPowerTime;
 
 	private Ponto ponto;
 
@@ -88,6 +97,7 @@ class Player {
 		this.explosionStart = 0;
 		this.explosionEnd = 0;
 		this.nextShot = System.currentTimeMillis();
+		this.startPowerTime = System.currentTimeMillis();
 	}
 
 
@@ -118,6 +128,14 @@ class Player {
 
 	public double getY(){
 		return this.ponto.getY();
+	}
+
+	public double getStartPowerTime() {
+		return this.startPowerTime;
+	}
+
+	public void setStartPowerTime(long time) {
+		this.startPowerTime = time;
 	}
 
 	public void setState(int s){
@@ -181,6 +199,34 @@ class Player {
 
 	public void setNextShot(Long time) {
 		this.nextShot = time;
+	}
+
+	
+	public void setVX(double vx){
+		this.ponto.setVX(vx);
+	}
+
+	public void setVY(double vy){
+		this.ponto.setVY(vy);
+	}
+
+	public double getVX(){
+		return this.ponto.getVX();
+	}
+
+	
+	public double getVY(){
+		return this.ponto.getVY();
+	}
+
+	public void dobraVelocidade() {
+		this.setVX(0.5);
+		this.setVY(0.5);
+	}
+
+	public void voltaVelocidadeNormal() {
+		this.setVX(0.25);
+		this.setVY(0.25);
 	}
 	
 }
@@ -554,7 +600,7 @@ class Power {
 	
 	private Ponto ponto;						// coordenadas
 	private double  radius;				// raio (tamanho do power-up)
-	private long nextPower;					// instante em que um novo power-up deve aparecer
+	private static long nextPower;					// instante em que um novo power-up deve aparecer
 	private int status;		// status do power-up
 
 	public Power() {
@@ -565,8 +611,8 @@ class Power {
 		if (random_height == 0 || random_height == 1) random_height = 2;
 
 		this.ponto = new Ponto(GameLib.WIDTH / random_width, GameLib.HEIGHT / random_height, 0.25, 0.25);
-		this.radius = 6
-		this.nextPower = System.currentTimeMillis() + 30000;   // 30 segundos para aparecer um novo power-up
+		this.radius = 6.0;
+		Power.nextPower = System.currentTimeMillis() + 30000;   // 30 segundos para aparecer um novo power-up
 		this.status = 1;
 	}
 
@@ -582,8 +628,8 @@ class Power {
 		return this.radius;
 	}
 
-	public long getNextPower() {
-		return this.nextPower;
+	public static long getNextPower() {
+		return Power.nextPower;
 	}
 
 	public int getStatus() {
@@ -591,11 +637,11 @@ class Power {
 	}
 
 	public void setX(double x){
-		this.X = x;
+		this.ponto.setX(x);
 	}
 
 	public void setY(double y){
-		this.Y = y;
+		this.ponto.setY(y);
 	}
 
 	public void setRadius(double radius) {
@@ -662,6 +708,9 @@ public class Main {
 		List <Projectile> e_projectiles = new ArrayList<Projectile>();
 		List <Star1> stars_1 = new ArrayList<Star1>();
 		List <Star2> stars_2 = new ArrayList<Star2>();
+
+		/*Power-up*/
+		List <Power> powers = new ArrayList<Power>();
 			
 		
 		/* inicializações */
@@ -761,6 +810,22 @@ public class Main {
 						p1.explodir();
 					}
 				}
+
+				/* colisões player - power-ups */
+
+				for(Power powerUp : powers){
+
+					double dx = powerUp.getX() - p1.getX();
+					double dy = powerUp.getY() - p1.getY();
+					double dist = Math.sqrt(dx * dx + dy * dy);
+
+					if(dist < (p1.getRadius() + powerUp.getRadius()) * 0.8){
+
+						p1.dobraVelocidade();
+						p1.setStartPowerTime(currentTime);
+						powerUp.setStatus(INACTIVE);
+					}
+				}
 			}
 			
 			/* colisões projeteis (player) - inimigos */
@@ -797,6 +862,8 @@ public class Main {
 						}
 					}
 				}
+
+				
 			}
 				
 			/***************************/
@@ -967,9 +1034,21 @@ public class Main {
 					Enemy2.setCount(0);					
 					Enemy2.setNext_enemy2((long) (currentTime + 3000 + Math.random() * 3000));
 				}
-
-				
 			
+			}
+
+			/* verificando se novos power-ups devem ser "lançados" */
+			if (powers.size() == 0) {
+				Power power = new Power();
+				powers.add(power);
+			}
+			else {
+				if(currentTime > Power.getNextPower()){
+
+                    Power newPower = new Power();
+                    powers.add(newPower);
+            	}
+
 			}
 			
 			/* Verificando se a explosão do player já acabou.         */
@@ -1107,6 +1186,19 @@ public class Main {
 					GameLib.drawDiamond(enemy.getX(), enemy.getY(), enemy.getRadius());
 				}
 			}
+
+			// Desenhando powerups
+			for (Power power : powers) {
+				if(power.getStatus() == ACTIVE){
+			
+					GameLib.setColor(Color.PINK);
+					GameLib.drawDiamond(power.getX(), power.getY(), power.getRadius());
+				}
+			}
+
+			/* interrompe o efeito do power-up (se o player o pegou) após 10 segundos */
+			if (currentTime > p1.getStartPowerTime() + 10000)
+				p1.voltaVelocidadeNormal();
 			
 			/* chamada a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
 			
