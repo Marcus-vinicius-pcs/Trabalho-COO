@@ -453,8 +453,8 @@ class Power {
 		Random random = new Random();
 		int random_width = random.nextInt(10);
 		int random_height = random.nextInt(10);
-		if (random_width == 0 || random_width == 1) random_width = 0.5;
-		if (random_height == 0 || random_height == 1) random_height = 0.5;
+		if (random_width == 0 || random_width == 1) random_width = 2;
+		if (random_height == 0 || random_height == 1) random_height = 2;
 
 		this.ponto = new Ponto(GameLib.WIDTH / random_width, GameLib.HEIGHT / random_height, 0.25, 0.25);
 		this.radius = 6
