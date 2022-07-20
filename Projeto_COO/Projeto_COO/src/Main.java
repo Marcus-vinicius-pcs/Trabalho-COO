@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /***********************************************************************/
 /*                                                                     */
@@ -44,6 +45,14 @@ class Ponto {
 		this.Y = y;
 	}
 
+	public void setVX(double vx){
+		this.velocidadeX = vx;
+	}
+
+	public void setVY(double vy){
+		this.velocidadeY = vy;
+	}
+
 	public double getVX(){
 		return this.velocidadeX;
 	}
@@ -77,6 +86,7 @@ class Player {
 	private double explosionStart;
 	private double explosionEnd;
 	private long nextShot;
+	private long startPowerTime;
 
 	private Ponto ponto;
 
@@ -87,6 +97,7 @@ class Player {
 		this.explosionStart = 0;
 		this.explosionEnd = 0;
 		this.nextShot = System.currentTimeMillis();
+		this.startPowerTime = 0;
 	}
 
 
@@ -119,6 +130,10 @@ class Player {
 		return this.ponto.getY();
 	}
 
+	public double getStartPowerTime() {
+		return this.startPowerTime;
+	}
+
 	public void setState(int s){
 		this.state = s;
 	}
@@ -129,6 +144,10 @@ class Player {
 	
 	public void setY(double y){
 		this.ponto.setY(y);
+	}
+
+	public void setStartPowerTime(long time) {
+		this.startPowerTime = time;
 	}
 
 	public void verificarFimExplosao(){
@@ -181,26 +200,35 @@ class Player {
 	public void setNextShot(Long time) {
 		this.nextShot = time;
 	}
+
+	public void setVX(double vx){
+		this.ponto.setVX(vx);
+	}
+
+	public void setVY(double vy){
+		this.ponto.setVY(vy);
+	}
+
+	public double getVX(){
+		return this.ponto.getVX();
+	}
+
+	public double getVY(){
+		return this.ponto.getVY();
+	}
+
+	public void dobraVelocidade() {
+		this.setVX(this.getVX()*2);
+		this.setVY(this.getVY()*2);
+	}
+
+	public void voltaVelocidadeNormal() {
+		this.setVX(this.getVX()/2);
+		this.setVY(this.getVY()/2);
+	}
 	
 }
 
-class Enemy{
-	private Ponto ponto;						// coordenadas
-
-	private int state;					// estados
-	private double angle;				// ângulos (indicam direção do movimento)
-	private double RV;					// velocidades de rotação
-	private double explosion_start;		// instantes dos inícios das explosões
-	private double explosion_end;		// instantes dos finais da explosões
-	private double  radius;				// raio (tamanho do inimigo 1)
-	private long nextEnemy;					// instante em que um novo inimigo 1 deve aparecer
-
-	public Enemy() {
-		this.state = 0;
-	}
-
-
-}
 
 class Enemy1{
 	private long nextShoot;				// instantes do próximo tiro
@@ -565,6 +593,70 @@ class Star2 {
 }
 
 
+class Power {
+
+	// este power-up, quando em contato com o player, dobra a velocidade dele
+	
+	private Ponto ponto;						// coordenadas
+	private double  radius;				// raio (tamanho do power-up)
+	private static long nextPower;					// instante em que um novo power-up deve aparecer
+	private int status;		// status do power-up
+
+	public Power() {
+		Random random = new Random();
+		int random_width = random.nextInt(10);
+		int random_height = random.nextInt(10);
+		if (random_width == 0 || random_width == 1) random_width = 2;
+		if (random_height == 0 || random_height == 1) random_height = 2;
+
+		this.ponto = new Ponto(GameLib.WIDTH / random_width, GameLib.HEIGHT / random_height, 0.25, 0.25);
+		this.radius = 6.0;
+		this.nextPower = System.currentTimeMillis() + 30000;   // 30 segundos para aparecer um novo power-up
+		this.status = 1;
+	}
+
+	public double getX(){
+		return ponto.getX();
+	}
+
+	public double getY(){
+		return ponto.getX();
+	}
+
+	public double getRadius() {
+		return this.radius;
+	}
+
+	public static long getNextPower() {
+		return Power.nextPower;
+	}
+
+	public int getStatus() {
+		return this.status;
+	}
+
+	public void setX(double x){
+		this.ponto.setX(x);
+	}
+
+	public void setY(double y){
+		this.ponto.setX(y);
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public static void setNextPower(long nextPower) {
+		Power.nextPower = nextPower;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+}
+
 public class Main {
 	
 	/* Constantes relacionadas aos estados que os elementos   */
@@ -651,7 +743,7 @@ public class Main {
 		List <Projectile> e_projectiles = new ArrayList<Projectile>();
 		List <Star1> stars_1 = new ArrayList<Star1>();
 		List <Star2> stars_2 = new ArrayList<Star2>();
-			
+		List <Power> powers = new ArrayList<Power>();
 		
 		/* inicializações */
 		
@@ -748,6 +840,23 @@ public class Main {
 					if(dist < (p1.getRadius() + enemy.getRadius()) * 0.8){
 						
 						p1.explodir();
+					}
+				}
+
+
+				/* colisões player - power-ups */
+	
+				for(Power powerUp : powers){
+					
+					double dx = powerUp.getX() - p1.getX();
+					double dy = powerUp.getY() - p1.getY();
+					double dist = Math.sqrt(dx * dx + dy * dy);
+					
+					if(dist < (p1.getRadius() + powerUp.getRadius()) * 0.8){
+						
+						p1.dobraVelocidade();
+						p1.setStartPowerTime(currentTime);
+						powerUp.setStatus(INACTIVE);
 					}
 				}
 			}
@@ -960,6 +1069,20 @@ public class Main {
 				
 			
 			}
+
+			/* verificando se novos power-ups devem ser "lançados" */
+			if (powers.size() == 0) {
+				Power power = new Power();
+				powers.add(power);
+			}
+			else {
+				if(currentTime > Power.getNextPower()){
+
+                    Power newPower = new Power();
+                    powers.add(newPower);
+            	}
+				
+			}
 			
 			/* Verificando se a explosão do player já acabou.         */
 			/* Ao final da explosão, o player volta a ser controlável */
@@ -1040,7 +1163,7 @@ public class Main {
 				GameLib.drawPlayer(p1.getX(), p1.getY(), p1.getRadius());
 			}
 				
-			/* deenhando projeteis (player) */
+			/* desenhando projeteis (player) */
 
 			for (Projectile p : projectiles) {
 				if(p.getState() == ACTIVE){
@@ -1096,7 +1219,12 @@ public class Main {
 					GameLib.drawDiamond(enemy.getX(), enemy.getY(), enemy.getRadius());
 				}
 			}
+
+			/* interrompe o efeito do power-up (se o player o pegou) após 10 segundos */
+			if (currentTime > p1.getStartPowerTime() + 10000)
+				p1.voltaVelocidadeNormal();
 			
+
 			/* chamada a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
 			
 			GameLib.display();
