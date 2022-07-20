@@ -447,6 +447,7 @@ class Power {
 	private Ponto ponto;						// coordenadas
 	private double  radius;				// raio (tamanho do power-up)
 	private long nextPower;					// instante em que um novo power-up deve aparecer
+	private int status;		// status do power-up
 
 	public Power() {
 		Random random = new Random();
@@ -458,6 +459,7 @@ class Power {
 		this.ponto = new Ponto(GameLib.WIDTH / random_width, GameLib.HEIGHT / random_height, 0.25, 0.25);
 		this.radius = 6
 		this.nextPower = System.currentTimeMillis() + 30000;   // 30 segundos para aparecer um novo power-up
+		this.status = 1;
 	}
 
 	public double getX(){
@@ -472,8 +474,12 @@ class Power {
 		return this.radius;
 	}
 
-	public long getNextShoot() {
+	public long getNextPower() {
 		return this.nextPower;
+	}
+
+	public int getStatus() {
+		return this.status;
 	}
 
 	public void setX(double x){
@@ -490,6 +496,10 @@ class Power {
 
 	public static void setNextPower(long nextPower) {
 		this.nextPower = nextPower;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 }
@@ -715,6 +725,7 @@ public class Main {
 						
 						p1.ponto.dobraVelocidade();
 						p1.setStartPowerTime(currentTime);
+						powerUp.setStatus = INACTIVE;
 					}
 				}
 			}
@@ -940,6 +951,20 @@ public class Main {
 						nextEnemy2 = (long) (currentTime + 3000 + Math.random() * 3000);
 					}
 				}
+			}
+
+			/* verificando se novos power-ups devem ser "lançados" */
+			if (powers.size() == 0) {
+				Power power = new Power();
+				powers.add(newEnemy1);
+			}
+			else {
+				if(currentTime > Power.getNextPower()){
+
+                    Power newPower = new Power();
+                    powers.add(newPower);
+            	}
+				
 			}
 			
 			/* Verificando se a explosão do player já acabou.         */
