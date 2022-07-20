@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /***********************************************************************/
 /*                                                                     */
@@ -546,6 +547,71 @@ class Star2 {
 	public static double getCount(){return Star2.count;}
 
 }
+
+class Power {
+
+	// este power-up, quando em contato com o player, dobra a velocidade dele
+	
+	private Ponto ponto;						// coordenadas
+	private double  radius;				// raio (tamanho do power-up)
+	private long nextPower;					// instante em que um novo power-up deve aparecer
+	private int status;		// status do power-up
+
+	public Power() {
+		Random random = new Random();
+		int random_width = random.nextInt(10);
+		int random_height = random.nextInt(10);
+		if (random_width == 0 || random_width == 1) random_width = 2;
+		if (random_height == 0 || random_height == 1) random_height = 2;
+
+		this.ponto = new Ponto(GameLib.WIDTH / random_width, GameLib.HEIGHT / random_height, 0.25, 0.25);
+		this.radius = 6
+		this.nextPower = System.currentTimeMillis() + 30000;   // 30 segundos para aparecer um novo power-up
+		this.status = 1;
+	}
+
+	public double getX(){
+		return this.ponto.getX();
+	}
+
+	public double getY(){
+		return this.ponto.getY();
+	}
+
+	public double getRadius() {
+		return this.radius;
+	}
+
+	public long getNextPower() {
+		return this.nextPower;
+	}
+
+	public int getStatus() {
+		return this.status;
+	}
+
+	public void setX(double x){
+		this.X = x;
+	}
+
+	public void setY(double y){
+		this.Y = y;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public static void setNextPower(long nextPower) {
+		Power.nextPower = nextPower;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+}
+
 
 
 public class Main {
