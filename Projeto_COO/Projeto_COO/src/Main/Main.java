@@ -65,6 +65,10 @@ public class Main {
 
 		Enemy2.setNext_enemy2(currentTime + 7000);
 		Enemy2.setSpawn(Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8);
+
+		List<Enemy3> enemies3 = new ArrayList<Enemy3>();
+		List<Enemy3> enemies3Remove = new ArrayList<Enemy3>();
+		Enemy3.setNextEnemy(currentTime + 10000);
 		
 		List <Projectile> e_projectiles = new ArrayList<Projectile>();
 		List <Star1> stars_1 = new ArrayList<Star1>();
@@ -126,6 +130,7 @@ public class Main {
 			// Exclui enemigos das listas
 			enemies1.removeAll(enemies1Remove);
 			enemies2.removeAll(enemies2Remove);
+			enemies3.removeAll(enemies1Remove);
 			
 			/***************************/
 			/* Verificação de colisões */
@@ -167,6 +172,18 @@ public class Main {
 					double dist = Math.sqrt(dx * dx + dy * dy);
 
 					if(dist < (p1.getRadius() + enemy.getRadius()) * 0.8){
+						
+						p1.explodir();
+					}
+				}
+
+				for(Enemy3 e : enemies3){
+					
+					double dx = e.getX() - p1.getX();
+					double dy = e.getY() - p1.getY();
+					double dist = Math.sqrt(dx * dx + dy * dy);
+					
+					if(dist < (p1.getRadius() + e.getRadius()) * 0.8){
 						
 						p1.explodir();
 					}
@@ -220,6 +237,21 @@ public class Main {
 							enemy.setState(EXPLODING);
 							enemy.setExplosion_start(currentTime);
 							enemy.setExplosion_end(currentTime + 500);
+						}
+					}
+				}
+
+				for(Enemy3 e : enemies3){
+										
+					if(e.getState() == ACTIVE){
+					
+						double dx = e.getX() - p.getX();
+						double dy = e.getY() - p.getY();
+						double dist = Math.sqrt(dx * dx + dy * dy);
+						
+						if(dist < e.getRadius()){
+							
+							e.explodir();
 						}
 					}
 				}
@@ -359,7 +391,34 @@ public class Main {
 							
 						}
 					}
+
 				}
+			
+			}
+
+			for(Enemy3 e : enemies3){
+				
+				if(e.concluirExplosao()) enemies3Remove.add(e);
+				
+				if(e.getState() == ACTIVE){
+					
+					/* verificando se inimigo saiu da tela */
+
+					if(e.verificarSaiuDaTela()) enemies3Remove.add(e);
+					else {
+					
+						e.moverParaDireita(delta);
+						e.moverParaCima(delta);
+						e.rotacionar(delta);
+						
+						if(currentTime > e.getNextShoot() && e.getY() < p1.getY()){
+																							
+							Projectile e_p = new Projectile(e);
+							e_projectiles.add(e_p);
+							e.setNextShoot((long) (currentTime + 300 + Math.random() * 500));
+							}
+						}
+					}
 			}
 			
 			
@@ -396,6 +455,22 @@ public class Main {
 					Enemy2.setNext_enemy2((long) (currentTime + 3000 + Math.random() * 3000));
 				}
 			
+			}
+
+
+			/* verificando se novos inimigos (tipo 1) devem ser "lançados" */
+			if (enemies3.size() == 0 && currentTime > Enemy3.getNextEnemy()) {
+				Enemy1 newEnemy3 = new Enemy3();
+				enemies3.add(newEnemy3);
+				Enemy3.setNextEnemy(currentTime + 500);
+			}
+			else {
+				if(currentTime > Enemy3.getNextEnemy()){
+                    Enemy3 newEnemy3 = new Enemy3();
+                    enemies3.add(newEnemy1);
+					Enemy3.setNextEnemy(currentTime + 500);
+            	}
+				
 			}
 
 			/* verificando se novos power-ups devem ser "lançados" */
@@ -545,6 +620,21 @@ public class Main {
 			
 					GameLib.setColor(Color.MAGENTA);
 					GameLib.drawDiamond(enemy.getX(), enemy.getY(), enemy.getRadius());
+				}
+			}
+
+			for(Enemy3 e : enemies3){
+				
+				if(e.getState() == EXPLODING){
+					
+					double alpha = (currentTime - e.getExplosion_start()) / (e.getExplosion_end() - e.getExplosion_start());
+					GameLib.drawExplosion(e.getX(), e.getY(), alpha);
+				}
+				
+				if(e.getState() == ACTIVE){
+			
+					GameLib.setColor(Color.GREEN);
+					GameLib.drawCircle(e.getX(), e.getY(), e.getRadius());
 				}
 			}
 

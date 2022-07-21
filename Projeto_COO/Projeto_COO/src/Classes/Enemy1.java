@@ -10,16 +10,16 @@ public  class Enemy1{
 	private double RV;					// velocidades de rotação
 	private double explosion_start;		// instantes dos inícios das explosões
 	private double explosion_end;		// instantes dos finais da explosões
-	private static double radius = 9.0;				// raio (tamanho do inimigo 1)
+	private static double radius = 10.0;				// raio (tamanho do inimigo 1)
 	private static long nextEnemy;
 	
 
-	public Enemy1(){
-		this.ponto = new Ponto(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0, 0.20 + Math.random() * 0.15);
+	public Enemy3(){
+		this.ponto = new Ponto(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0, 0.20 + Math.random() * 0.25);
 		this.angle = (3 * Math.PI) / 2;
 		this.RV = 0.0;
 		this.state = 1;
-		this.nextShoot = System.currentTimeMillis() + 500;
+		this.nextShoot = System.currentTimeMillis() + 300;
 	}
 
 	public double getY(){
