@@ -244,8 +244,8 @@ public class Main {
 					}
 					else {
 					
-						p.moverParaDireita(delta);
-						p.moverParaCima(delta);
+						p.moverHorizontal(delta);
+						p.moverVertical(delta);
 					}
 				}
 			}
@@ -263,8 +263,8 @@ public class Main {
 						p.setState(INACTIVE);
 					}
 					else {
-						p.moverParaDireita(delta);
-						p.moverParaCima(delta);
+						p.moverHorizontal(delta);
+						p.moverVertical(delta);
 					}
 				}
 			}
@@ -282,8 +282,8 @@ public class Main {
 					if(e.verificarSaiuDaTela()) enemies1Remove.add(e);
 					else {
 					
-						e.moverParaDireita(delta);
-						e.moverParaCima(delta);
+						e.moverHorizontal(delta);
+						e.moverVertical(delta);
 						e.rotacionar(delta);
 						
 						if(currentTime > e.getNextShoot() && e.getY() < p1.getY()){

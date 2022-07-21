@@ -119,13 +119,13 @@ public  class Enemy1{
 	}
 
 
-	public void moverParaCima(long delta) {
-		this.ponto.moverParaCima(Math.sin(this.getAngle()), delta);
+	public void moverVertical(long delta) {
+		this.ponto.moverVertical(Math.sin(this.getAngle()), delta);
 	}
 
 
-	public void moverParaDireita(long delta){
-		this.ponto.moverParaDireita(Math.cos(this.getAngle()), delta);
+	public void moverHorizontal(long delta){
+		this.ponto.moverHorizontal(Math.cos(this.getAngle()), delta);
 	}
 
 	public void rotacionar(long delta){

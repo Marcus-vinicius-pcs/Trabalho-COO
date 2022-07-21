@@ -49,17 +49,11 @@ public  class Ponto {
 	}
 
 
-	public void moverParaCima(double y, long delta){
+	public void moverVertical(double y, long delta){
 		this.Y -= y*delta*this.velocidadeY;
 	}
 
-	public void moverParaBaixo(double y, long delta){
-		this.Y += y*delta*this.velocidadeY;
-	}
-	public void moverParaEsquerda(double x, long delta){
-		this.X -= x*delta*this.velocidadeX;
-	}
-	public void moverParaDireita(double x, long delta){
+	public void moverHorizontal(double x, long delta){
 		this.X += x*delta*this.velocidadeX;
 	}
 

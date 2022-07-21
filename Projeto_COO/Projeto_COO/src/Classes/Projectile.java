@@ -55,12 +55,12 @@ public class Projectile{
 		this.ponto.setY(y);
 	}
 
-	public void moverParaCima(long delta){
-		this.ponto.moverParaCima(1, delta*-1);
+	public void moverVertical(long delta){
+		this.ponto.moverVertical(1, delta*-1);
 	}
 	
-	public void moverParaDireita(long delta){
-		this.ponto.moverParaDireita(1, delta);
+	public void moverHorizontal(long delta){
+		this.ponto.moverHorizontal(1, delta);
 	}
 	
 }
