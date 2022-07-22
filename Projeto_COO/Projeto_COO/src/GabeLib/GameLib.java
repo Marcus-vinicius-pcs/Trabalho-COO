@@ -185,7 +185,6 @@ public class GameLib {
 	}
 }
 
-@SuppressWarnings("serial")
 class MyFrame extends JFrame {
 	
 	public MyFrame(String title){

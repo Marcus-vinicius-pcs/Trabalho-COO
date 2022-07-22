@@ -96,19 +96,19 @@ public class Player {
 	}
 
 	public void moverParaCima(long delta){
-		this.ponto.moverParaCima(1, delta);
+		this.ponto.moverVertical(1, delta);
 	}
 	
 	public void moverParaDireita(long delta){
-		this.ponto.moverParaDireita(1, delta);
+		this.ponto.moverHorizontal(1, delta);
 	}
 
 	public void moverParaBaixo(long delta){
-		this.ponto.moverParaBaixo(1, delta);
+		this.ponto.moverVertical(1, delta);
 	}
 
 	public void moverParaEsquerda(long delta){
-		this.ponto.moverParaEsquerda(1, delta);
+		this.ponto.moverHorizontal(1, delta);
 	}
 
 	public void setExplosionStart(double time) {

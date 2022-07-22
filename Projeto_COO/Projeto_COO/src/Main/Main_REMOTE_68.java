@@ -22,7 +22,6 @@ public class Main {
 		
 			GameLib.initGraphics();
 			//GameLib.initGraphics_SAFE_MODE();  // chame esta versão do método caso nada seja desenhado na janela do jogo.
-
 			
 			/*************************************************************************************************/
 			/*                                                                                               */
