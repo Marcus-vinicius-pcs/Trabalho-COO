@@ -20,11 +20,8 @@ public class Main {
 			Jogo jogo = new Jogo();
 			/* iniciado interface gráfica */
 		
-
-=======
 			GameLib.initGraphics();
 			//GameLib.initGraphics_SAFE_MODE();  // chame esta versão do método caso nada seja desenhado na janela do jogo.
->>>>>>> refatoracao
 			
 			/*************************************************************************************************/
 			/*                                                                                               */
@@ -86,9 +83,6 @@ public class Main {
 					
 				
 		}
-
-=======
->>>>>>> refatoracao
 		System.exit(0);
 		}
 		catch(Exception e){
