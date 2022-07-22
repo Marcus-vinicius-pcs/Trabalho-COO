@@ -100,7 +100,7 @@ public class Player {
 	}
 	
 	public void moverParaDireita(long delta){
-		this.ponto.moverParaDireita(1, delta);
+		this.ponto.moverHorizontal(1, delta);
 	}
 
 	public void moverParaBaixo(long delta){
