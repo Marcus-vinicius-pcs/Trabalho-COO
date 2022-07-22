@@ -25,6 +25,12 @@ public class Projectile{
 		this.radius = 2.0;
 	}
 
+	public Projectile(Enemy3 e){
+		this.state = 1;
+		this.ponto = new Ponto(e.getX(), e.getY(), Math.cos(e.getAngle()) * 0.45, Math.sin(e.getAngle()) * 0.45 * (-1.0));/
+		this.radius = 2.0;
+	}
+
 
 	public void setState(int s){
 		this.state = s;

@@ -82,11 +82,11 @@ public  class Enemy3{
 	}
 
 	public void setRadius(double radius) {
-		Enemy1.radius = radius;
+		Enemy3.radius = radius;
 	}
 
 	public static void setNextEnemy(long nextEnemy) {
-		Enemy1.nextEnemy = nextEnemy;
+		Enemy3.nextEnemy = nextEnemy;
 	}
 
 	public void setNextShoot(long nextShoot) {
