@@ -394,8 +394,8 @@ public class Jogo {
 		if(p1.getState() == 1){
 				
 			if(GameLib.iskeyPressed(GameLib.KEY_UP)) p1.moverParaCima(delta);
-			if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) p1.moverParaBaixo(delta);
-			if(GameLib.iskeyPressed(GameLib.KEY_LEFT)) p1.moverParaEsquerda(delta);
+			if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) p1.moverParaBaixo(delta*-1);
+			if(GameLib.iskeyPressed(GameLib.KEY_LEFT)) p1.moverParaEsquerda(delta*-1);
 			if(GameLib.iskeyPressed(GameLib.KEY_RIGHT)) p1.moverParaDireita(delta);
 			
 			if(GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {

@@ -81,8 +81,9 @@ public class Main {
 				/*******************/
 				jogo.desenharCena();
 					
-				System.exit(0);
+				
 		}
+		System.exit(0);
 		}
 		catch(Exception e){
 			e.printStackTrace();
