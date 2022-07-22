@@ -14,7 +14,7 @@ public  class Enemy3{
 	private static long nextEnemy;
 	
 
-	public Enemy1(){
+	public Enemy3(){
 		this.ponto = new Ponto(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0, 0.20 + Math.random() * 0.15);
 		this.angle = (3 * Math.PI) / 2;
 		this.RV = 0.0;

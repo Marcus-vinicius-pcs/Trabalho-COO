@@ -460,14 +460,14 @@ public class Main {
 
 			/* verificando se novos inimigos (tipo 1) devem ser "lançados" */
 			if (enemies3.size() == 0 && currentTime > Enemy3.getNextEnemy()) {
-				Enemy1 newEnemy3 = new Enemy3();
+				Enemy3 newEnemy3 = new Enemy3();
 				enemies3.add(newEnemy3);
 				Enemy3.setNextEnemy(currentTime + 500);
 			}
 			else {
 				if(currentTime > Enemy3.getNextEnemy()){
                     Enemy3 newEnemy3 = new Enemy3();
-                    enemies3.add(newEnemy1);
+                    enemies3.add(newEnemy3);
 					Enemy3.setNextEnemy(currentTime + 500);
             	}
 				
