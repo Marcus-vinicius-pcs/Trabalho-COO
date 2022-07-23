@@ -82,11 +82,11 @@ public  class Enemy3{
 	}
 
 	public void setRadius(double radius) {
-		Enemy1.radius = radius;
+		Enemy3.radius = radius;
 	}
 
 	public static void setNextEnemy(long nextEnemy) {
-		Enemy1.nextEnemy = nextEnemy;
+		Enemy3.nextEnemy = nextEnemy;
 	}
 
 	public void setNextShoot(long nextShoot) {
@@ -120,12 +120,12 @@ public  class Enemy3{
 
 
 	public void moverParaCima(long delta) {
-		this.ponto.moverParaCima(Math.sin(this.getAngle()), delta);
+		this.ponto.moverVertical(Math.sin(this.getAngle()), delta);
 	}
 
 
 	public void moverParaDireita(long delta){
-		this.ponto.moverParaDireita(Math.cos(this.getAngle()), delta);
+		this.ponto.moverHorizontal(Math.cos(this.getAngle()), delta);
 	}
 
 	public void rotacionar(long delta){
